@@ -1,0 +1,7 @@
+*.log
+*bin*
+*.settings*
+.classpath
+.project
+/target
+/src/main/webapp/VAADIN/widgetsets/*
