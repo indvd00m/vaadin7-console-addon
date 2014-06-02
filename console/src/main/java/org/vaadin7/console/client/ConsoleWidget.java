@@ -1,16 +1,24 @@
 package org.vaadin7.console.client;
 
-import com.google.gwt.user.client.ui.Label;
+/**
+ * Extend any GWT Widget.
+ * 
+ * @author indvdum (gotoindvdum[at]gmail[dot]com)
+ * @since 22.05.2014 17:22:44
+ * 
+ */
+public class ConsoleWidget extends TextConsole {
 
-// Extend any GWT Widget
-public class ConsoleWidget extends Label {
+	private static final String CSS_CLASS_NAME = "console";
 
+	/**
+	 * The constructor should first call super() to initialize the component and
+	 * then handle any initialization relevant to Vaadin.
+	 */
 	public ConsoleWidget() {
-
-		// CSS class-name should not be v- prefixed
-		setStyleName("console");
-
-		// State is set to widget in ConsoleConnector		
+		super();
+		getElement().addClassName(CSS_CLASS_NAME);
+		getConfig().setScrolledToEnd(true);
 	}
 
 }

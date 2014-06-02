@@ -24,6 +24,7 @@ $darkgreen: darken($green, 30%);
 	// the component. To include built-in CSS for your component,
 	// edit client/styles.css under java sources
 	div.console {
+	/*
 		color: $green;
 		font-size: 50pt;
 		font-weight: bold;
@@ -32,5 +33,44 @@ $darkgreen: darken($green, 30%);
              0px 24px 2px rgba(0,0,0,0.1),
              0px 34px 30px rgba(0,0,0,0.1);
         text-align: center;
+    */
+	}
+	
+	.term, .term .i {
+	    background-color: #000 !important;
+	    color: #f0f0f0 !important;
+	    font-family: monospace !important;
+	    font-size: 10pt !important;
+	}
+	
+	.term-chat {
+		background-color: #FFFFFF !important;
+		color: #000000 !important;
+	}
+
+	.term-chat .psw {
+		background-color: #FFFFFF !important;
+		color: #888888 !important;
+	}
+	
+	.term-chat .iw, .term-chat .i {
+		background-color: #DDDDDD !important;
+		color: #000000 !important;
+	}
+	
+	.chat-time {
+		color: blue;
+	}
+	
+	.chat-my-nick {
+		color: #800080;
+	}
+	
+	.chat-others-nick {
+		color: #000080;
+	}
+	
+	.chat-system-message {
+		color: gray;
 	}
 }
