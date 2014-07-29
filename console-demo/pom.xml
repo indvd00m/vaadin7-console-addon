@@ -5,7 +5,7 @@
 	<groupId>org.vaadin7.addons</groupId>
 	<artifactId>console-demo</artifactId>
 	<packaging>war</packaging>
-	<version>1.3.0</version>
+	<version>1.3.1-SNAPSHOT</version>
 	<name>Console Add-on Demo</name>
 
 	<properties>
@@ -75,7 +75,7 @@
 		<dependency>
 			<groupId>org.vaadin7.addons</groupId>
 			<artifactId>console</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
