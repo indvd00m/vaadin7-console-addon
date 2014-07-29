@@ -172,7 +172,7 @@ public class DemoUI extends UI {
 		}));
 
 		VerticalLayout vl2 = new VerticalLayout();
-		vl2.setSizeFull();
+		vl2.setWidth("100%");
 		ts.addTab(vl2, "Chat");
 
 		Console chat = new Console();
@@ -181,7 +181,7 @@ public class DemoUI extends UI {
 		chat.setSizeFull();
 		chat.setMaxBufferSize(400);
 		chat.setPs(" > ");
-		final String username = "%username%";
+		final String username = "username";
 		chat.setGreeting("Welcome, " + username);
 		chat.setWrap(true);
 		chat.setPrintPromptOnInput(false);
