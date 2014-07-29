@@ -34,8 +34,9 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 	private Console console = this;
 
 	// To process events from the client, we implement ServerRpc
-	@SuppressWarnings("serial")
 	private ConsoleServerRpc rpc = new ConsoleServerRpc() {
+
+		private static final long serialVersionUID = 443398479527027435L;
 
 		@Override
 		public void setHeight(String height) {
@@ -325,6 +326,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 	public void setWidth(float width, Unit unit) {
 		if (width != getWidth() || unit != getWidthUnits()) {
 			super.setWidth(width, unit);
+			getState().width = width + unit.getSymbol();
 		}
 	}
 
@@ -336,6 +338,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 	public void setHeight(float height, Unit unit) {
 		if (height != getHeight() || unit != getHeightUnits()) {
 			super.setHeight(height, unit);
+			getState().height = height + unit.getSymbol();
 		}
 	}
 
@@ -517,7 +520,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 			print(output);
 			return;
 		}
-		getRpcProxy(ConsoleClientRpc.class).print(output, className);
+		getRpcProxy(ConsoleClientRpc.class).printWithClass(output, className);
 	}
 
 	public String getGreeting() {
@@ -605,7 +608,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 			println(string);
 			return;
 		}
-		getRpcProxy(ConsoleClientRpc.class).println(string, className);
+		getRpcProxy(ConsoleClientRpc.class).printlnWithClass(string, className);
 	}
 
 	/**
@@ -641,7 +644,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 				notPrintedYet = notPrintedYet.replaceFirst("\\Q" + nextStr + "\\E", "");
 			cssClasses = cssClasses.trim();
 			if (cssClasses.length() > 0)
-				getRpcProxy(ConsoleClientRpc.class).append(nextStr, cssClasses);
+				getRpcProxy(ConsoleClientRpc.class).appendWithClass(nextStr, cssClasses);
 			else
 				getRpcProxy(ConsoleClientRpc.class).append(nextStr);
 		}
@@ -659,7 +662,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 	public Console append(final String string, final String className) {
 		if (className == null)
 			return append(string);
-		getRpcProxy(ConsoleClientRpc.class).append(string, className);
+		getRpcProxy(ConsoleClientRpc.class).appendWithClass(string, className);
 		return this;
 	}
 

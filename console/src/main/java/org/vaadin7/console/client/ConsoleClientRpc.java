@@ -24,15 +24,15 @@ public interface ConsoleClientRpc extends ClientRpc {
 
 	public void print(String text);
 
-	public void print(String text, String className);
+	public void printWithClass(String text, String className);
 
 	public void println(String text);
 
-	public void println(String text, String className);
+	public void printlnWithClass(String text, String className);
 
 	public void append(String text);
 
-	public void append(String text, String className);
+	public void appendWithClass(String text, String className);
 
 	public void prompt();
 

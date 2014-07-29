@@ -3,6 +3,7 @@ package org.vaadin7.console.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -366,7 +367,9 @@ public class TextConsole extends FocusWidget {
 	}
 
 	private boolean bufferEndsWithNewLine() {
-		final Node last = buffer != null ? buffer.getLastChild() : null;
+		Node last = buffer != null ? buffer.getLastChild() : null;
+		while (last != null && last.getLastChild() != null)
+			last = last.getLastChild();
 		// GWT.log("last node: " + (last != null ? last.getNodeName() :
 		// "<null>"));
 		return last != null && "br".equals(last.getNodeName().toLowerCase());
@@ -511,7 +514,7 @@ public class TextConsole extends FocusWidget {
 		String str = string.replaceAll("\t", tabs);
 
 		// Continue to the last text node if available
-		final Node last = getLastTextNode();
+		final Node last = getLastFirstLevelTextNode();
 		int linesAdded = 0;
 		if (last != null) {
 			// GWT.log("print append to old node: '" + last.getNodeValue() +
@@ -539,7 +542,7 @@ public class TextConsole extends FocusWidget {
 		reducePrompt(linesAdded);
 	}
 
-	public void print(String string, String className) {
+	public void printWithClass(String string, String className) {
 		if (className == null) {
 			print(string);
 			return;
@@ -591,7 +594,7 @@ public class TextConsole extends FocusWidget {
 		String str = string.replaceAll("\t", tabs);
 
 		// Continue to the last text node if available
-		final Node last = getLastTextNode();
+		final Node last = getLastFirstLevelTextNode();
 		int linesAdded = 0;
 		if (last != null) {
 			// GWT.log("print append to old node: '" + last.getNodeValue() +
@@ -619,7 +622,7 @@ public class TextConsole extends FocusWidget {
 		reducePrompt(linesAdded);
 	}
 
-	public void append(String string, String className) {
+	public void appendWithClass(String string, String className) {
 		if (className == null) {
 			append(string);
 			return;
@@ -721,7 +724,7 @@ public class TextConsole extends FocusWidget {
 
 	}
 
-	private Node getLastTextNode() {
+	private Node getLastFirstLevelTextNode() {
 		if (buffer == null) {
 			return null;
 		}
@@ -736,8 +739,8 @@ public class TextConsole extends FocusWidget {
 		print(string + "\n");
 	}
 
-	public void println(final String string, final String className) {
-		print(string + "\n", className);
+	public void printlnWithClass(final String string, final String className) {
+		printWithClass(string + "\n", className);
 	}
 
 	@Override
@@ -782,9 +785,9 @@ public class TextConsole extends FocusWidget {
 		config.setCols(cols);
 		buffer.getStyle().setWidth((cols * fontW), Unit.PX);
 		prompt.getStyle().setWidth((cols * fontW), Unit.PX);
-		// GWT.log("calculateColsFromWidth: font=" + fontW + "x" + fontH
-		// + ";scrollbar=" + scrollbarW + ";cols=" + cols + ";rows="
-		// + rows + ";size=" + getWidth() + "x" + getHeight());
+//		 GWT.log("calculateColsFromWidth: font=" + fontW + "x" + fontH
+//		 + ";scrollbar=" + scrollbarW + ";cols=" + cols + ";rows="
+//		 + rows + ";size=" + getWidth() + "x" + getHeight());
 		if (oldCols != cols) {
 			handler.colsChanged(cols);
 		}
@@ -796,9 +799,9 @@ public class TextConsole extends FocusWidget {
 		buffer.getStyle().setWidth(w, Unit.PX);
 		prompt.getStyle().setWidth(w, Unit.PX);
 
-		// GWT.log("calculateWidthFromCols: font=" + fontW + "x" + fontH
-		// + ";scrollbar=" + scrollbarW + ";cols=" + cols + ";rows="
-		// + rows + ";size=" + getWidth() + "x" + getHeight());
+//		 GWT.log("calculateWidthFromCols: font=" + fontW + "x" + fontH
+//		 + ";scrollbar=" + scrollbarW + ";cols=" + cols + ";rows="
+//		 + rows + ";size=" + getWidth() + "x" + getHeight());
 
 		handler.paintableSizeChanged();
 	}
@@ -808,11 +811,15 @@ public class TextConsole extends FocusWidget {
 		final int oldw = term.getClientWidth();
 		super.setWidth(width);
 		final int neww = term.getClientWidth();
-		// GWT.log("set width=" + width + " clientWidth="+oldw+" to "+neww);
+//		 GWT.log("set width=" + width + " clientWidth="+oldw+" to "+neww);
 		if (neww != oldw) {
 			calculateColsFromWidth();
 		}
 	}
+	
+	private native int trace()/*-{
+		console.trace();
+	}-*/;
 
 	@Override
 	public void setFocus(final boolean focused) {

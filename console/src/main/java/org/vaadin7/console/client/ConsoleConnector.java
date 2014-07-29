@@ -6,6 +6,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.annotations.OnStateChange;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractComponentConnector;
@@ -21,9 +22,10 @@ import com.vaadin.shared.ui.Connect;
  * @since 22.05.2014 11:20:45
  * 
  */
-@SuppressWarnings("serial")
 @Connect(Console.class)
 public class ConsoleConnector extends AbstractComponentConnector implements FocusHandler {
+
+	private static final long serialVersionUID = 2829157055722482839L;
 
 	// ServerRpc is used to send events to server. Communication implementation
 	// is automatically created here
@@ -68,8 +70,8 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
 			}
 
 			@Override
-			public void print(String text, String className) {
-				getWidget().print(text, className);
+			public void printWithClass(String text, String className) {
+				getWidget().printWithClass(text, className);
 			}
 
 			@Override
@@ -78,8 +80,8 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
 			}
 
 			@Override
-			public void println(String text, String className) {
-				getWidget().println(text, className);
+			public void printlnWithClass(String text, String className) {
+				getWidget().printlnWithClass(text, className);
 			}
 
 			@Override
@@ -88,8 +90,8 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
 			}
 
 			@Override
-			public void append(String text, String className) {
-				getWidget().append(text, className);
+			public void appendWithClass(String text, String className) {
+				getWidget().appendWithClass(text, className);
 			}
 
 			@Override
@@ -229,6 +231,7 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
 	// Whenever the state changes in the server-side, this method is called
 	@Override
 	public void onStateChanged(StateChangeEvent stateChangeEvent) {
+		// GWT.log("onStateChanged() width = " + getState().width);
 		super.onStateChanged(stateChangeEvent);
 	}
 
@@ -241,6 +244,18 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
 
 	public void notifyPaintableSizeChange() {
 		getLayoutManager().setNeedsMeasure(this);
+	}
+
+	@OnStateChange("width")
+	void widthChanged() {
+		// GWT.log("widthChanged to " + getState().width);
+		getWidget().setWidth(getState().width);
+	}
+
+	@OnStateChange("height")
+	void heightChanged() {
+		// GWT.log("heightChanged to " + getState().height);
+		getWidget().setHeight(getState().height);
 	}
 
 }
