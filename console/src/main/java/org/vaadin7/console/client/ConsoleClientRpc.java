@@ -64,6 +64,6 @@ public interface ConsoleClientRpc extends ClientRpc {
 
 	public void setPrintPromptOnInput(boolean printPromptOnInput);
 
-	public void setSmartScrollToEnd(boolean smartScrollToEnd);
+	public void setScrollLock(boolean scrollLock);
 
 }

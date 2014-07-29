@@ -86,7 +86,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 		setMaxBufferSize(getMaxBufferSize());
 		setWrap(isWrap());
 		setPrintPromptOnInput(isPrintPromptOnInput());
-		setSmartScrollToEnd(isSmartScrollToEnd());
+		setScrollLock(isScrollLock());
 		setGreeting(getGreeting());
 		setPs(getPs());
 		reset();
@@ -145,22 +145,20 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 
 	/**
 	 * @return true, if method scrollToEnd will only work if last scroll state
-	 *         was "end" (like Linux KDE console emulator "Konsole"), false
-	 *         otherwise (by default)
+	 *         was "end"
 	 */
-	public boolean isSmartScrollToEnd() {
-		return config.isSmartScrollToEnd;
+	public boolean isScrollLock() {
+		return config.isScrollLock;
 	}
 
 	/**
-	 * @param isSmartScrollToEnd
+	 * @param isScrollLock
 	 *            if true - method scrollToEnd will only work if last scroll
-	 *            state was "end" (like Linux KDE console emulator "Konsole");
-	 *            false by default
+	 *            state was "end"
 	 */
-	public void setSmartScrollToEnd(final boolean isSmartScrollToEnd) {
-		config.isSmartScrollToEnd = isSmartScrollToEnd;
-		getRpcProxy(ConsoleClientRpc.class).setSmartScrollToEnd(isSmartScrollToEnd);
+	public void setScrollLock(final boolean isScrollLock) {
+		config.isScrollLock = isScrollLock;
+		getRpcProxy(ConsoleClientRpc.class).setScrollLock(isScrollLock);
 	}
 
 	/**
@@ -187,7 +185,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 		int rows = DEFAULT_ROWS;
 		boolean wrap = DEFAULT_WRAP;
 		boolean isPrintPromptOnInput = DEFAULT_PRINT_PROMPT_ON_INPUT;
-		boolean isSmartScrollToEnd = DEFAULT_SMART_SCROLL_TO_END;
+		boolean isScrollLock = DEFAULT_SMART_SCROLL_TO_END;
 		String ps = DEFAULT_PS;
 		String greeting = DEFAULT_GREETING;
 

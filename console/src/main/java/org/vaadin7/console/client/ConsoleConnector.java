@@ -171,8 +171,8 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
 			}
 
 			@Override
-			public void setSmartScrollToEnd(boolean smartScrollToEnd) {
-				getWidget().getConfig().setSmartScrollToEnd(smartScrollToEnd);
+			public void setScrollLock(boolean scrollLock) {
+				getWidget().getConfig().setScrollLock(scrollLock);
 			}
 
 		});

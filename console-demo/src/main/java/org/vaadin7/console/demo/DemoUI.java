@@ -185,7 +185,7 @@ public class DemoUI extends UI {
 		chat.setGreeting("Welcome, " + username);
 		chat.setWrap(true);
 		chat.setPrintPromptOnInput(false);
-		chat.setSmartScrollToEnd(true);
+		chat.setScrollLock(true);
 		chat.setConvertANSIToCSS(true);
 		chat.reset();
 		chat.println("\033[01;31mThis \033[01;32m console \033[01;33m element \033[01;34m used \033[01;35m as \033[01;36m a \033[01;37m fake \033[01;31m chat");

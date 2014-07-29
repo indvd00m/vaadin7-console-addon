@@ -478,7 +478,7 @@ public class TextConsole extends FocusWidget {
 	private boolean isCheckedScrollState = false;
 
 	public void scrollToEnd() {
-		if (config.isSmartScrollToEnd()) {
+		if (config.isScrollLock()) {
 			if (config.isScrolledToEnd())
 				term.setScrollTop(BIG_NUMBER);
 		} else

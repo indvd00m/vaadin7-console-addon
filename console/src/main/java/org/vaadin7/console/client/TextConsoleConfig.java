@@ -51,12 +51,12 @@ public class TextConsoleConfig extends JavaScriptObject {
 														return this.PrintPromptOnInput;
 														}-*/;
 
-	public final native void setSmartScrollToEnd(boolean s) /*-{
-															this.isSmartScrollToEnd = s;
+	public final native void setScrollLock(boolean s) /*-{
+															this.isScrollLock = s;
 															}-*/;
 
-	public final native boolean isSmartScrollToEnd() /*-{
-														return this.isSmartScrollToEnd;
+	public final native boolean isScrollLock() /*-{
+														return this.isScrollLock;
 														}-*/;
 
 	public final native void setScrolledToEnd(boolean s) /*-{
