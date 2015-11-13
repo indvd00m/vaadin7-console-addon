@@ -1,0 +1,331 @@
+<!-- $Id: macros.xml 51916 2015-09-29 17:46:58Z archie $ -->
+
+<project name="build-macros"
+  xmlns:antcontrib="urn:net.sf.antcontrib"
+  xmlns:dellroad="urn:org.dellroad.ant"
+  xmlns:ivy="urn:org.apache.ivy.ant"
+  xmlns:jibx="urn:net.sourceforge.jibx"
+  xmlns:testng="urn:org.testng"
+  xmlns:cobertura="urn:net.sf.cobertura"
+  xmlns:findbugs="urn:edu.umd.cs.findbugs"
+  xmlns:checkstyle="urn:net.sf.checkstyle">
+
+<!--
+    Instructions for includers of this file:
+
+    - Define "javac.classpath" target finding classes required for javac and unit test compilation
+    - Define "unittest.classpath" target finding additional classes required for unit test execution
+    - Override "javac.compiler.flags" if desired
+
+-->
+
+    <!-- Project should override this as necessary -->
+    <property name="javac.compiler.flags" value=""/>
+    <property name="javac.compiler.version" value="1.7"/>
+    <property name="ivy.resolve.offline" value="false"/>
+
+<!--
+        ************* DETERMINE BASE DIRECTORY ****************
+-->
+
+    <dirname property="build.macros.dir" file="${ant.file.build-macros}"/>
+
+<!--
+        ************* DEFINE ANTCONTRIB AND IVY STUFF ****************
+-->
+
+    <!-- Set variables -->
+    <property name="data.dir" value="/usr/share"/>
+
+    <!-- Load environment variables as properties with "environ." prefix -->
+    <property environment="environ"/>
+
+    <!-- Find ivy.jar; use IVY_JAR environment variable if set, otherwise fall back to default -->
+    <condition property="ivy.jar" value="${environ.IVY_JAR}">
+        <isset property="environ.IVY_JAR"/>
+    </condition>
+    <condition property="ivy.jar" value="${data.dir}/java/ivy.jar">
+        <not>
+            <isset property="environ.IVY_JAR"/>
+        </not>
+    </condition>
+    <fail message="can't find ivy.jar; please install ${data.dir}/java/ivy.jar or set $IVY_JAR">
+        <condition>
+            <not>
+                <available file="${ivy.jar}"/>
+            </not>
+        </condition>
+    </fail>
+
+    <!-- Import ivy tasks -->
+    <taskdef uri="urn:org.apache.ivy.ant" resource="org/apache/ivy/ant/antlib.xml" classpath="${ivy.jar}"/>
+
+    <!-- Find ant-contrib.jar; use ANT_CONTRIB_JAR environment variable if set, otherwise fall back to default -->
+    <condition property="ant-contrib.jar" value="${environ.ANT_CONTRIB_JAR}">
+        <isset property="environ.ANT_CONTRIB_JAR"/>
+    </condition>
+    <condition property="ant-contrib.jar" value="${data.dir}/java/ant-contrib.jar">
+        <not>
+            <isset property="environ.ANT_CONTRIB_JAR"/>
+        </not>
+    </condition>
+    <fail message="can't find ant-contrib.jar; please install ${data.dir}/java/ant-contrib.jar or set $ANT_CONTRIB_JAR">
+        <condition>
+            <not>
+                <available file="${ant-contrib.jar}"/>
+            </not>
+        </condition>
+    </fail>
+
+    <!-- Import ant-contrib tasks -->
+    <taskdef uri="urn:net.sf.antcontrib" resource="net/sf/antcontrib/antcontrib.properties" classpath="${ant-contrib.jar}"/>
+
+    <!-- Find clover.jar; use CLOVER_JAR environment variable if set, otherwise fall back to default -->
+    <condition property="clover.jar" value="${environ.CLOVER_JAR}">
+        <isset property="environ.CLOVER_JAR"/>
+    </condition>
+    <condition property="clover.jar" value="${data.dir}/clover/lib/clover.jar">
+        <not>
+            <isset property="environ.CLOVER_JAR"/>
+        </not>
+    </condition>
+    <antcontrib:if>
+        <available file="${clover.jar}" type="file"/>
+        <antcontrib:then>
+            <property name="clover.enabled" value="true"/>
+
+            <!-- Import clover tasks -->
+            <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
+        </antcontrib:then>
+    </antcontrib:if>
+
+    <!-- Get the sed(1) 'extended regular expression' flag for this O/S ('-E' for BSDish, '-r' for Linux) -->
+    <exec outputproperty="sed.extended.flag" executable="/bin/sh" logError="true" failonerror="true">
+        <arg value="-c"/>
+        <arg value="case `uname -s` in
+            Darwin|*BSD)
+                printf '%s' -E;
+                ;;
+            *)
+                printf '%s' -r;
+                ;;
+            esac"/>
+    </exec>
+
+<!--
+        ************* IVY CONFIGURATION ****************
+-->
+
+    <!--
+        Macro for resolving a classpath by naming the module, etc. directly.
+        Defines classpath "@{pathid}" and sets property "@{pathid}.resolved".
+    -->
+    <macrodef uri="urn:org.dellroad.ant" name="ivymodpath">
+        <attribute name="pathid" description="Classpath reference id to define"/>
+        <attribute name="org" description="Module organisation name"/>
+        <attribute name="mod" description="Module module name"/>
+        <attribute name="rev" description="Module revision"/>
+        <attribute name="conf" default="default" description="Name of the ivy configuration to resolve"/>
+        <attribute name="type" default="jar" description="Type of artifact to resolve"/>
+        <attribute name="settingsRef" default="build-macros-ivy-settings" description="Reference to ivy settings"/>
+        <attribute name="transitive" default="true" description="Whether to resolve dependencies transitively"/>
+        <attribute name="log" default="download-only" description="When to log activity"/>
+        <sequential>
+            <ivy:resolve settingsRef="@{settingsRef}" organisation="@{org}" module="@{mod}" revision="@{rev}"
+              type="@{type}" inline="true" transitive="@{transitive}" conf="@{conf}" log="@{log}"
+              useCacheOnly="${ivy.resolve.offline}"/>
+            <ivy:cachepath settingsRef="@{settingsRef}" organisation="@{org}" module="@{mod}" revision="@{rev}"
+              type="@{type}" inline="true" transitive="@{transitive}" conf="@{conf}" log="@{log}" pathid="@{pathid}"/>
+            <property name="@{pathid}.resolved" value="true"/>
+        </sequential>
+    </macrodef>
+
+    <!--
+        Macro for resolving a classpath using a named configuration in ivy.xml.
+        Defines classpath "@{pathid}" and sets property "@{pathid}.resolved".
+    -->
+    <macrodef uri="urn:org.dellroad.ant" name="ivypath">
+        <attribute name="pathid" description="Classpath reference id to define"/>
+        <attribute name="ivyfile" default="${basedir}/src/ivy/ivy.xml" description="ivy.xml defining the named configuration"/>
+        <attribute name="conf" description="Name of the ivy configuration to resolve"/>
+        <attribute name="type" default="jar" description="Type of artifact to resolve"/>
+        <attribute name="settingsRef" default="build-macros-ivy-settings" description="Reference to ivy settings"/>
+        <attribute name="transitive" default="true" description="Whether to resolve dependencies transitively"/>
+        <attribute name="log" default="download-only" description="When to log activity"/>
+        <sequential>
+            <ivy:resolve file="@{ivyfile}" settingsRef="@{settingsRef}" type="@{type}"
+              transitive="@{transitive}" conf="@{conf}" log="@{log}" useCacheOnly="${ivy.resolve.offline}"/>
+            <ivy:cachepath file="@{ivyfile}" settingsRef="@{settingsRef}" type="@{type}"
+              transitive="@{transitive}" conf="@{conf}" log="@{log}" pathid="@{pathid}"/>
+            <property name="@{pathid}.resolved" value="true"/>
+        </sequential>
+    </macrodef>
+
+    <!--
+        Macro for resolving a fileset using a named configuration in ivy.xml.
+        Defines fileset "@{setid}" and sets property "@{setid}.resolved".
+    -->
+    <macrodef uri="urn:org.dellroad.ant" name="ivyfileset">
+        <attribute name="setid" description="Fileset reference id to define"/>
+        <attribute name="ivyfile" default="${basedir}/src/ivy/ivy.xml" description="ivy.xml defining the named configuration"/>
+        <attribute name="conf" description="Name of the ivy configuration to resolve"/>
+        <attribute name="type" default="jar" description="Type of artifact to resolve"/>
+        <attribute name="settingsRef" default="build-macros-ivy-settings" description="Reference to ivy settings"/>
+        <attribute name="transitive" default="true" description="Whether to resolve dependencies transitively"/>
+        <attribute name="log" default="download-only" description="When to log activity"/>
+        <sequential>
+            <ivy:resolve file="@{ivyfile}" settingsRef="@{settingsRef}" type="@{type}"
+              transitive="@{transitive}" conf="@{conf}" log="@{log}" useCacheOnly="${ivy.resolve.offline}"/>
+            <ivy:cachefileset file="@{ivyfile}" settingsRef="@{settingsRef}" type="@{type}"
+              transitive="@{transitive}" conf="@{conf}" log="@{log}" setid="@{setid}"/>
+            <property name="@{setid}.resolved" value="true"/>
+        </sequential>
+    </macrodef>
+
+    <!--
+        Macro for retrieving ivy artifacts using a named configuration in ivy.xml.
+    -->
+    <macrodef uri="urn:org.dellroad.ant" name="ivyput">
+        <attribute name="pattern" description="Ivy pattern for artifact destination"/>
+        <attribute name="ivyfile" default="${basedir}/src/ivy/ivy.xml" description="ivy.xml defining the named configuration"/>
+        <attribute name="conf" description="Name of the ivy configuration to resolve"/>
+        <attribute name="type" default="jar" description="Type of artifact to resolve"/>
+        <attribute name="settingsRef" default="build-macros-ivy-settings" description="Reference to ivy settings"/>
+        <attribute name="transitive" default="true" description="Whether to resolve dependencies transitively"/>
+        <attribute name="log" default="download-only" description="When to log activity"/>
+        <sequential>
+            <ivy:resolve file="@{ivyfile}" settingsRef="@{settingsRef}" type="@{type}"
+              transitive="@{transitive}" conf="@{conf}" log="@{log}" useCacheOnly="${ivy.resolve.offline}"/>
+            <ivy:retrieve file="@{ivyfile}" settingsRef="@{settingsRef}" type="@{type}"
+              transitive="@{transitive}" conf="@{conf}" log="@{log}" pattern="@{pattern}"/>
+        </sequential>
+    </macrodef>
+
+    <!--
+        Macro for retrieving artifacts by naming the module, etc. directly.
+        Does not require an ivy.xml file.
+    -->
+    <macrodef uri="urn:org.dellroad.ant" name="ivymodget">
+        <attribute name="pattern" description="Ivy pattern for artifact destination"/>
+        <attribute name="org" description="Module organisation name"/>
+        <attribute name="mod" description="Module module name"/>
+        <attribute name="rev" description="Module revision"/>
+        <attribute name="conf" default="default" description="Name of the ivy configuration to resolve"/>
+        <attribute name="type" default="jar" description="Type of artifact to resolve"/>
+        <attribute name="settingsRef" default="build-macros-ivy-settings" description="Reference to ivy settings"/>
+        <attribute name="transitive" default="true" description="Whether to resolve dependencies transitively"/>
+        <attribute name="log" default="download-only" description="When to log activity"/>
+        <sequential>
+            <ivy:resolve settingsRef="@{settingsRef}" organisation="@{org}" module="@{mod}" revision="@{rev}"
+              type="@{type}" inline="true" transitive="@{transitive}" conf="@{conf}" log="@{log}"
+              useCacheOnly="${ivy.resolve.offline}"/>
+            <ivy:retrieve settingsRef="@{settingsRef}" organisation="@{org}" module="@{mod}" revision="@{rev}"
+              type="@{type}" inline="true" transitive="@{transitive}" conf="@{conf}" log="@{log}" pattern="@{pattern}"/>
+        </sequential>
+    </macrodef>
+
+    <!--
+        Macro for generating a resolution report for a given configuration.
+        Requires a previous <ivy:resolve> operation.
+    -->
+    <macrodef uri="urn:org.dellroad.ant" name="ivyreport">
+        <attribute name="conf" default="default" description="Name of the ivy configuration to report"/>
+        <attribute name="destdir" default="build/reports/ivy" description="Directory in which to put generated reports"/>
+        <attribute name="settingsRef" default="build-macros-ivy-settings" description="Reference to ivy settings"/>
+        <sequential>
+            <mkdir dir="@{destdir}"/>
+            <ivy:report settingsRef="@{settingsRef}" conf="@{conf}" todir="@{destdir}" xml="true" outputpattern="[conf].[ext]"/>
+        </sequential>
+    </macrodef>
+
+    <!-- Configure Ivy -->
+    <antcontrib:if>
+        <available file="${basedir}/src/ivy/settings.xml" type="file"/>
+        <antcontrib:then>
+            <ivy:settings id="build-macros-ivy-settings" file="${basedir}/src/ivy/settings.xml"/>
+        </antcontrib:then>
+        <antcontrib:elseif>
+            <available file="${data.dir}/ivy/settings.xml" type="file"/>
+            <antcontrib:then>
+                <ivy:settings id="build-macros-ivy-settings" file="${data.dir}/ivy/settings.xml"/>
+            </antcontrib:then>
+        </antcontrib:elseif>
+        <antcontrib:else>
+            <ivy:settings id="build-macros-ivy-settings" file="${build.macros.dir}/ivysettings.xml"/>
+        </antcontrib:else>
+    </antcontrib:if>
+
+<!--
+        ************* MACROS AND PRESETDEFS ****************
+-->
+
+    <!-- Check umask -->
+    <macrodef uri="urn:org.dellroad.ant" name="checkumask">
+        <attribute name="u" default="" description="Required user bits"/>
+        <attribute name="g" default="" description="Required group bits"/>
+        <attribute name="o" default="" description="Required other bits"/>
+        <sequential>
+            <exec outputproperty="@{property}" executable="/bin/bash" logError="true" failonerror="true">
+                <arg value="-c"/>
+                <arg value="
+                    set -e;
+                    bailout()
+                    {
+                        echo ERROR: $${1+&quot;$@&quot;} 1>&amp;2;
+                        exit 1;
+                    };
+                    PAT='^u=((r)?(w)?(x)?),g=((r)?(w)?(x)?),o=((r)?(w)?(x)?)$$';
+                    UBITS=`umask -S`;
+                    echo $${UBITS} | grep -qE &quot;$${PAT}&quot; || bailout failed to parse umask: `umask -S`;
+                    [ '@{u}' = '' -o `echo $${UBITS} | sed ${sed.extended.flag} 's|'&quot;$${PAT}&quot;'|\1|g'` = '@{u}' ]
+                      || bailout umask must have u='@{u}';
+                    [ '@{g}' = '' -o `echo $${UBITS} | sed ${sed.extended.flag} 's|'&quot;$${PAT}&quot;'|\5|g'` = '@{g}' ]
+                      || bailout umask must have g='@{g}';
+                    [ '@{o}' = '' -o `echo $${UBITS} | sed ${sed.extended.flag} 's|'&quot;$${PAT}&quot;'|\9|g'` = '@{o}' ]
+                      || bailout umask must have o='@{o}';
+                "/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <!-- Ivy module publish -->
+    <macrodef uri="urn:org.dellroad.ant" name="ivydist">
+        <attribute name="version" description="Ivy module version"/>
+        <attribute name="resolver" default="local" description="Name of ivy resolver with which to publish"/>
+        <attribute name="settingsRef" default="build-macros-ivy-settings" description="Reference to ivy settings"/>
+        <attribute name="ivyfile" default="${basedir}/src/main/ivy/ivy.xml" description="Ivy file to publish"/>
+        <element name="module-preparation"/>
+        <sequential>
+
+            <!-- Check umask -->
+            <dellroad:checkumask u="rwx" g="rwx" o="rx"/>
+
+            <!-- Copy ivy.xml -->
+            <delete dir="${basedir}/build/ivy"/>
+            <mkdir dir="${basedir}/build/ivy"/>
+            <copy file="@{ivyfile}" toFile="${basedir}/build/ivy/ivy.xml"/>
+            <module-preparation/>
+
+            <!-- Publish module -->
+            <ivy:resolve settingsRef="@{settingsRef}" file="${basedir}/build/ivy/ivy.xml" log="download-only"/>
+            <ivy:publish settingsRef="build-macros-ivy-settings" forcedeliver="true" validate="true"
+              overwrite="true" resolver="@{resolver}" srcivypattern="${basedir}/build/ivy/ivy.xml"
+              pubrevision="@{version}">
+                <artifacts pattern="${basedir}/build/ivy/[type]s/[artifact].[ext]"/>
+            </ivy:publish>
+        </sequential>
+    </macrodef>
+
+<!--
+        ************* PREDEFINED TARGETS ****************
+-->
+
+    <target name="clean" depends="clean-project" unless="clean.completed">
+        <delete dir="build"/>
+        <delete dir="dist"/>
+        <property name="clean.completed" value="true"/>
+    </target>
+    <target name="clean-project"/>
+
+</project>
+
