@@ -1,5 +1,7 @@
 package org.vaadin7.console;
 
+import com.vaadin.ui.Component;
+
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -20,8 +22,6 @@ import java.util.Set;
 
 import org.vaadin7.console.Console.Command;
 
-import com.vaadin.ui.Component;
-
 /**
  * Java object inspector.
  *
@@ -34,10 +34,11 @@ import com.vaadin.ui.Component;
 public class ObjectInspector implements Serializable, Console.CommandProvider {
     private static final long serialVersionUID = -5001688079827306472L;
     private static final List<String> OBJECT_BLACKLIST = Arrays
-            .asList(new String[] { "equals", "class", "hashCode", "notify", "notifyAll", "toString", "wait" });
-    private static final List<String> VAADIN_BLACKLIST = Arrays.asList(new String[] { "addListener", "attach", "application", "changeVariables",
-            "childRequestedRepaint", "componentError", "detach", "handleError", "paint", "paintContent", "removeListener", "requestRepaint",
-            "requestRepaintRequests", "style", "tag" });
+            .asList("equals", "class", "hashCode", "notify", "notifyAll", "toString", "wait");
+    private static final List<String> VAADIN_BLACKLIST = Arrays.asList("addListener", "attach", "application", "changeVariables",
+      "childRequestedRepaint", "componentError", "detach", "handleError", "paint", "paintContent", "removeListener",
+      "requestRepaint",
+      "requestRepaintRequests", "style", "tag");
 
     private Object theObject;
     private final Map<String, Caller> commands = new HashMap<String, Caller>();
@@ -73,27 +74,26 @@ public class ObjectInspector implements Serializable, Console.CommandProvider {
 
         final Method[] methods = theObject.getClass().getMethods();
         for (final Method method : methods) {
-            final Method m = method;
-            if (!isBeanGetter(m) && !isBeanSetter(m)) {
+            if (!isBeanGetter(method) && !isBeanSetter(method)) {
 
-                String un = m.getName();
-                if (isIgnored(un) || !isParamTypesOkForConsole(m.getParameterTypes())) {
+                String un = method.getName();
+                if (isIgnored(un) || !isParamTypesOkForConsole(method.getParameterTypes())) {
                     continue;
                 }
 
                 // Make unique. Try param names first.
                 if (commands.containsKey(un)) {
-                    un += paramsToShortString(m.getParameterTypes());
+                    un += paramsToShortString(method.getParameterTypes());
                 }
 
                 // Fallback to appending number
                 int j = 1;
                 while (commands.containsKey(un)) {
-                    un = m.getName() + (j++);
+                    un = method.getName() + (j++);
                 }
 
-                final Caller cmd = m.getParameterTypes().length == 0 ? new Caller(theObject, m.getName(), null, m.getParameterTypes()) : new Caller(theObject,
-                        null, m.getName(), m.getParameterTypes());
+                final Caller cmd = method.getParameterTypes().length == 0 ? new Caller(theObject, method.getName(), null, method.getParameterTypes()) : new Caller(theObject,
+                        null, method.getName(), method.getParameterTypes());
                 commands.put(un, cmd);
             }
         }
@@ -311,7 +311,7 @@ public class ObjectInspector implements Serializable, Console.CommandProvider {
 
         public Object read() throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
             if (rm == null) {
-                rm = theObject.getClass().getMethod(readMethod, new Class<?>[] {});
+                rm = theObject.getClass().getMethod(readMethod);
             }
             return rm.invoke(theObject);
         }
@@ -373,7 +373,7 @@ public class ObjectInspector implements Serializable, Console.CommandProvider {
         StringBuilder res = new StringBuilder();
         if (paramTypes != null) {
             for (final Class<?> paramType : paramTypes) {
-                res.append("<" + paramType.getSimpleName() + "> ");
+                res.append("<").append(paramType.getSimpleName()).append("> ");
             }
         }
         return res.toString();

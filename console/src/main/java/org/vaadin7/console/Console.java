@@ -33,42 +33,6 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 
     private Console console = this;
 
-    // To process events from the client, we implement ServerRpc
-    private ConsoleServerRpc rpc = new ConsoleServerRpc() {
-
-        private static final long serialVersionUID = 443398479527027435L;
-
-        @Override
-        public void setHeight(String height) {
-            console.setHeight(height);
-        }
-
-        @Override
-        public void setWidth(String width) {
-            console.setWidth(width);
-        }
-
-        @Override
-        public void setCols(int cols) {
-            config.cols = cols;
-        }
-
-        @Override
-        public void setRows(int rows) {
-            config.rows = rows;
-        }
-
-        @Override
-        public void input(String input) {
-            handleInput(input);
-        }
-
-        @Override
-        public void suggest(String input) {
-            handleSuggest(input);
-        }
-    };
-
     public Console(final Console.Handler handler) {
         this();
         setHandler(handler);
@@ -79,6 +43,40 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
         setHandler(new DefaultConsoleHandler());
         setANSIToCSSConverter(new DefaultANSICodeConverter());
         // To receive events from the client, we register ServerRpc
+        ConsoleServerRpc rpc = new ConsoleServerRpc() {
+
+            private static final long serialVersionUID = 443398479527027435L;
+
+            @Override
+            public void setHeight(String height) {
+                console.setHeight(height);
+            }
+
+            @Override
+            public void setWidth(String width) {
+                console.setWidth(width);
+            }
+
+            @Override
+            public void setCols(int cols) {
+                config.cols = cols;
+            }
+
+            @Override
+            public void setRows(int rows) {
+                config.rows = rows;
+            }
+
+            @Override
+            public void input(String input) {
+                handleInput(input);
+            }
+
+            @Override
+            public void suggest(String input) {
+                handleSuggest(input);
+            }
+        };
         registerRpc(rpc);
 
         // setCols(getCols());
@@ -268,7 +266,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
          * @return
          * @throws Exception
          */
-        public Object execute(Console console, String[] argv) throws Exception;
+        Object execute(Console console, String[] argv) throws Exception;
 
         /**
          * Get usage information about this command.
@@ -277,7 +275,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
          * @param argv
          * @return
          */
-        public String getUsage(Console console, String[] argv);
+        String getUsage(Console console, String[] argv);
     }
 
     /**
@@ -398,9 +396,9 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
             }
             output += commonPrefix.toString();
             if (prefix.equals(commonPrefix.toString()) && !cancelIfNotASingleMatch) {
-                final StringBuffer suggestions = new StringBuffer("\n");
+                final StringBuilder suggestions = new StringBuilder("\n");
                 for (final String m : matches) {
-                    suggestions.append(" " + m);
+                    suggestions.append(' ').append(m);
                 }
                 print(suggestions.toString());
             } else {
@@ -465,7 +463,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
     protected static String[] parseInput(final String input) {
         if (input != null && !"".equals(input.trim())) {
             final String[] temp = input.split(" ");
-            if (temp != null && temp.length > 0) {
+            if (temp.length > 0) {
                 final List<String> parsed = new ArrayList<String>(temp.length);
                 String current = null;
                 for (final String element : temp) {
@@ -490,7 +488,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
                 if (current != null) {
                     parsed.add(current.replaceAll("\"", ""));
                 }
-                return parsed.toArray(new String[] {});
+                return parsed.toArray(new String[parsed.size()]);
             }
         }
         return new String[] {};
@@ -636,7 +634,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
 
     private void appendWithProcessingANSICodes(String sOutput) {
         String splitted[] = sOutput.split(ANSICodeConverter.ANSI_PATTERN);
-        String notPrintedYet = new String(sOutput);
+        String notPrintedYet = sOutput;
         for (int i = 0; i < splitted.length; i++) {
             String nextStr = splitted[i];
             if (i == 0 && nextStr.length() == 0)

@@ -11,16 +11,16 @@ import com.vaadin.shared.communication.ServerRpc;
  */
 public interface ConsoleServerRpc extends ServerRpc {
 
-    public void setHeight(String height);
+    void setHeight(String height);
 
-    public void setWidth(String width);
+    void setWidth(String width);
 
-    public void setCols(int cols);
+    void setCols(int cols);
 
-    public void setRows(int rows);
+    void setRows(int rows);
 
-    public void input(String input);
+    void input(String input);
 
-    public void suggest(String input);
+    void suggest(String input);
 
 }

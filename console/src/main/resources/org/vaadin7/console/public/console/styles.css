@@ -2,9 +2,7 @@
     background-color: #000;
     color: #f0f0f0;
     /* color: #33d011; */
-    padding: 1px;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding: 1px 2px;
     font-family: monospace;;
     font-size: 10pt;
     overflow: scroll;
@@ -46,9 +44,8 @@
 }
 
 .term .i {
-    border: none;
     outline: none;
-    border-width: 0;
+    border: 0 none;
     width: 100%;
     height: 1em;
     margin: 0;

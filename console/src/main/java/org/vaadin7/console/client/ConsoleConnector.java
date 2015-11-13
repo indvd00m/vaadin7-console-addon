@@ -1,7 +1,5 @@
 package org.vaadin7.console.client;
 
-import org.vaadin7.console.Console;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -12,6 +10,8 @@ import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractComponentConnector;
 import com.vaadin.shared.communication.FieldRpc.FocusAndBlurServerRpc;
 import com.vaadin.shared.ui.Connect;
+
+import org.vaadin7.console.Console;
 
 /**
  * Connector binds client-side widget class to server-side component class.
@@ -212,8 +212,7 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
     // We must implement createWidget() to create correct type of widget
     @Override
     protected Widget createWidget() {
-        ConsoleWidget widget = GWT.create(ConsoleWidget.class);
-        return widget;
+        return GWT.<ConsoleWidget>create(ConsoleWidget.class);
     }
 
     // We must implement getWidget() to cast to correct type

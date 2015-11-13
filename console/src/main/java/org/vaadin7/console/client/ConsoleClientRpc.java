@@ -12,58 +12,58 @@ import com.vaadin.shared.communication.ClientRpc;
  */
 public interface ConsoleClientRpc extends ClientRpc {
 
-    public void setGreeting(String greeting);
+    void setGreeting(String greeting);
 
-    public void setPs(String ps);
+    void setPs(String ps);
 
-    public void setWrap(boolean wrap);
+    void setWrap(boolean wrap);
 
-    public void setRows(int rows);
+    void setRows(int rows);
 
-    public void setCols(int cols);
+    void setCols(int cols);
 
-    public void print(String text);
+    void print(String text);
 
-    public void printWithClass(String text, String className);
+    void printWithClass(String text, String className);
 
-    public void println(String text);
+    void println(String text);
 
-    public void printlnWithClass(String text, String className);
+    void printlnWithClass(String text, String className);
 
-    public void append(String text);
+    void append(String text);
 
-    public void appendWithClass(String text, String className);
+    void appendWithClass(String text, String className);
 
-    public void prompt();
+    void prompt();
 
-    public void prompt(String inputText);
+    void prompt(String inputText);
 
-    public void ff();
+    void ff();
 
-    public void cr();
+    void cr();
 
-    public void lf();
+    void lf();
 
-    public void clearBuffer();
+    void clearBuffer();
 
-    public void reset();
+    void reset();
 
-    public void newLine();
+    void newLine();
 
-    public void newLineIfNotEndsWithNewLine();
+    void newLineIfNotEndsWithNewLine();
 
-    public void scrollToEnd();
+    void scrollToEnd();
 
-    public void focusInput();
+    void focusInput();
 
-    public void bell();
+    void bell();
 
-    public void setMaxBufferSize(int bufferSize);
+    void setMaxBufferSize(int bufferSize);
 
-    public void clearHistory();
+    void clearHistory();
 
-    public void setPrintPromptOnInput(boolean printPromptOnInput);
+    void setPrintPromptOnInput(boolean printPromptOnInput);
 
-    public void setScrollLock(boolean scrollLock);
+    void setScrollLock(boolean scrollLock);
 
 }

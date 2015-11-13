@@ -1,9 +1,5 @@
 package org.vaadin7.console.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -24,6 +20,9 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.vaadin.client.Util;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * GWT Console Widget.
@@ -683,8 +682,8 @@ public class TextConsole extends FocusWidget {
      * Split long text based on length.
      *
      * @param parent
-     * @param doWrap
      * @param str
+     * @param maxLine
      * @return
      */
     private int appendLine(final Node parent, String str, final int maxLine) {

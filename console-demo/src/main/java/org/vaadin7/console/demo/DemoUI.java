@@ -94,7 +94,7 @@ public class DemoUI extends UI {
                     Command hc = console.getCommand(argv[1]);
                     ArrayList<String> cmdArgv = new ArrayList<String>(Arrays.asList(argv));
                     cmdArgv.remove(0);
-                    return "Usage: " + hc.getUsage(console, cmdArgv.toArray(new String[] {}));
+                    return "Usage: " + hc.getUsage(console, cmdArgv.toArray(new String[cmdArgv.size()]));
                 }
                 return listAvailableCommands();
             }
@@ -115,7 +115,7 @@ public class DemoUI extends UI {
                 InputStream in = p.getInputStream();
                 StringBuilder o = new StringBuilder();
                 InputStreamReader r = new InputStreamReader(in);
-                int c = -1;
+                int c;
                 try {
                     while ((c = r.read()) != -1) {
                         o.append((char) c);
@@ -123,9 +123,7 @@ public class DemoUI extends UI {
                 } catch (IOException e) {
                     o.append("[truncated]");
                 } finally {
-                    if (r != null) {
-                        r.close();
-                    }
+                    r.close();
                 }
                 return o.toString();
             }
@@ -234,7 +232,7 @@ public class DemoUI extends UI {
     protected String readToString(InputStream in) {
         StringBuilder o = new StringBuilder();
         InputStreamReader r = new InputStreamReader(in);
-        int c = -1;
+        int c;
         try {
             while ((c = r.read()) != -1) {
                 o.append((char) c);

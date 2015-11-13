@@ -12,13 +12,10 @@ $darkgreen: darken($green, 30%);
 
 	// You can style your demo app right here
 	.demoContentLayout {
-		background-color: $gray;
-		background-image: url(images/radial-gradient.png);
-		background-size: 90%;
-		background-position: center center;
-		background-repeat: no-repeat;
-	}
-	
+      background-size: 90%;
+      background: $gray url(images/radial-gradient.png) no-repeat center center;
+    }
+
 	// You can also customize your component for the demo
 	// app, but remember that these styles are not part of
 	// the component. To include built-in CSS for your component,
@@ -35,14 +32,14 @@ $darkgreen: darken($green, 30%);
         text-align: center;
     */
 	}
-	
+
 	.term, .term .i {
 	    background-color: #000 !important;
 	    color: #f0f0f0 !important;
 	    font-family: monospace !important;
 	    font-size: 10pt !important;
 	}
-	
+
 	.term-chat {
 		background-color: #FFFFFF !important;
 		color: #000000 !important;
@@ -52,24 +49,24 @@ $darkgreen: darken($green, 30%);
 		background-color: #FFFFFF !important;
 		color: #888888 !important;
 	}
-	
+
 	.term-chat .iw, .term-chat .i {
 		background-color: #DDDDDD !important;
 		color: #000000 !important;
 	}
-	
+
 	.chat-time {
 		color: blue;
 	}
-	
+
 	.chat-my-nick {
 		color: #800080;
 	}
-	
+
 	.chat-others-nick {
 		color: #000080;
 	}
-	
+
 	.chat-system-message {
 		color: gray;
 	}
