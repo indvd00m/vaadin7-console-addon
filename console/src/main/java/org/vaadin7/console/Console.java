@@ -1,5 +1,7 @@
 package org.vaadin7.console;
 
+import com.vaadin.ui.Component;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,8 +20,6 @@ import org.vaadin7.console.ansi.DefaultANSICodeConverter;
 import org.vaadin7.console.client.ConsoleClientRpc;
 import org.vaadin7.console.client.ConsoleServerRpc;
 import org.vaadin7.console.client.ConsoleState;
-
-import com.vaadin.ui.Component;
 
 /**
  * This is the server-side UI component that provides public API for Console.
@@ -96,6 +96,18 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
     @Override
     public ConsoleState getState() {
         return (ConsoleState) super.getState();
+    }
+
+    public void clearMetadata() {
+        this.getState().metadata.clear();
+    }
+
+    public void setMetadata(String key, Serializable obj) {
+        this.getState().metadata.put(key, obj);
+    }
+
+    public Serializable getMetadata(String key) {
+        return this.getState().metadata.get(key);
     }
 
     private static final long serialVersionUID = 590258219352859644L;
