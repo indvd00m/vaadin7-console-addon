@@ -1,22 +1,37 @@
 # Console Add-on for Vaadin 7
 
-Console is an UI component add-on for Vaadin 7.
+Port of Console addon to Vaadin 7.
 
-## Online demo
+https://vaadin.com/directory#!addon/console
 
-Try the add-on demo at <url of the online demo>
+## Using
+Add maven repository to your POM:
+
+	<repository>
+		<id>indvd00m-github-repo</id>
+		<url>https://github.com/indvd00m/maven-repo/raw/master/repository</url>
+	</repository>
+
+Add dependency to your project:
+
+	<dependency>
+		<groupId>org.vaadin7.addons</groupId>
+		<artifactId>console</artifactId>
+		<version>1.3.0</version>
+	</dependency>
 
 ## Download release
 
-Official releases of this add-on are available at Vaadin Directory. For Maven instructions, download and reviews, go to http://vaadin.com/addon/console
+https://github.com/indvd00m/vaadin7-console-addon/releases
 
 ## Building and running demo
-
-git clone <url of the Console repository>
+```
+git clone https://github.com/indvd00m/vaadin7-console-addon/
+cd vaadin7-console-addon
 mvn clean install
-cd demo
+cd console-demo
 mvn jetty:run
-
+```
 To see the demo, navigate to http://localhost:8080/
 
 ## Development with Eclipse IDE
@@ -51,15 +66,13 @@ Another way of debugging client-side is superdev mode. To enable it, uncomment d
  
 ## Release notes
 
-### Version 1.3.0-SNAPSHOT
-- ...
-- ...
+### Version 1.3.0
+- First release for Vaadin 7
 
 ## Roadmap
 
 This component is developed as a hobby with no public roadmap or any guarantees of upcoming releases. That said, the following features are planned for upcoming releases:
-- ...
-- ...
+- Test port in real project.
 
 ## Issue tracking
 
@@ -79,32 +92,5 @@ Contributions are welcome, but there are no guarantees that they are accepted as
 
 Add-on is distributed under Apache License 2.0. For license terms, see LICENSE.txt.
 
-Console is written by <...>
-
-# Developer Guide
-
-## Getting started
-
-Here is a simple example on how to try out the add-on component:
-
-<...>
-
-For a more comprehensive example, see src/test/java/org/vaadin/template/demo/DemoUI.java
-
-## Features
-
-### Feature A
-
-<...>
-
-### Feature B
-
-<...>
-
-### Feature C
-
-<...>
-
-## API
-
-Console JavaDoc is available online at <...>
+Console is written by Sami Ekblad.
+Port to Vaadin 7 is written by David E. Veliev.
