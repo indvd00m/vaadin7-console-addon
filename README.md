@@ -4,6 +4,10 @@ Port of Console addon to Vaadin 7.
 
 https://vaadin.com/directory#!addon/console
 
+## Online demo
+
+Try the add-on demo at <http://indvd00m.com/console-demo>
+
 ## Using
 Add maven repository to your POM:
 
@@ -32,7 +36,7 @@ mvn clean install
 cd console-demo
 mvn jetty:run
 ```
-To see the demo, navigate to http://localhost:8080/
+To see the demo, navigate to <http://localhost:8080/>
 
 ## Development with Eclipse IDE
 
