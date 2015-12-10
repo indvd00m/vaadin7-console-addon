@@ -96,18 +96,6 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
         return (ConsoleState) super.getState();
     }
 
-    public void clearMetadata() {
-        this.getState().metadata.clear();
-    }
-
-    public void setMetadata(String key, Serializable obj) {
-        this.getState().metadata.put(key, obj);
-    }
-
-    public Serializable getMetadata(String key) {
-        return this.getState().metadata.get(key);
-    }
-
     private static final long serialVersionUID = 590258219352859644L;
     private Handler handler;
     private ANSICodeConverter ansiToCSSconverter;

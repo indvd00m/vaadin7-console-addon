@@ -65,9 +65,8 @@ public class TextConsole extends FocusWidget {
     private final InputElement input;
     private List<String> cmdHistory = new ArrayList<String>();
     private int cmdHistoryIndex = -1;
-    private final HandlerRegistration clickHandler;
-    private final HandlerRegistration keyHandler;
-    private HandlerRegistration focusHandler;
+    private HandlerRegistration clickHandlerRegistration;
+    private HandlerRegistration keyHandlerRegistration;
     private int fontW = -1;
     private int fontH = -1;
     private int scrollbarW = -1;
@@ -82,6 +81,41 @@ public class TextConsole extends FocusWidget {
     private int maxBufferSize;
     private String cleanPs;
     private int paddingW;
+    private final ClickHandler clickHandler = new ClickHandler() {
+
+        public void onClick(final ClickEvent event) {
+            setFocus(true);
+        }
+    };
+
+    private final KeyDownHandler keyHandler = new KeyDownHandler() {
+
+        public void onKeyDown(final KeyDownEvent event) {
+
+            // (re-)show the prompt
+            setPromtActive(true);
+
+            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                event.preventDefault();
+                carriageReturn();
+            } else if (event.getNativeKeyCode() == KeyCodes.KEY_UP || event.getNativeKeyCode() == KeyCodes.KEY_DOWN) {
+                event.preventDefault();
+                handleCommandHistoryBrowse(event.getNativeKeyCode());
+            } else if (event.getNativeKeyCode() == KeyCodes.KEY_TAB) {
+                event.preventDefault();
+                suggest();
+            } else if (event.getNativeKeyCode() == KeyCodes.KEY_BACKSPACE && getInputLenght() == 0) {
+                bell();
+            } else if (event.getNativeEvent().getCtrlKey()) {
+                final char ctrlChar = getControlKey(event.getNativeKeyCode());
+                if (ctrlChar > 0) {
+                    event.preventDefault();
+                    handleControlChar(ctrlChar);
+                }
+            }
+
+        }
+    };
 
     public TextConsole() {
 
@@ -135,42 +169,6 @@ public class TextConsole extends FocusWidget {
         config = TextConsoleConfig.newInstance();
 
         setPromtActive(false);
-
-        clickHandler = addDomHandler(new ClickHandler() {
-
-            public void onClick(final ClickEvent event) {
-                setFocus(true);
-            }
-        }, ClickEvent.getType());
-
-        keyHandler = addDomHandler(new KeyDownHandler() {
-
-            public void onKeyDown(final KeyDownEvent event) {
-
-                // (re-)show the prompt
-                setPromtActive(true);
-
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                    event.preventDefault();
-                    carriageReturn();
-                } else if (event.getNativeKeyCode() == KeyCodes.KEY_UP || event.getNativeKeyCode() == KeyCodes.KEY_DOWN) {
-                    event.preventDefault();
-                    handleCommandHistoryBrowse(event.getNativeKeyCode());
-                } else if (event.getNativeKeyCode() == KeyCodes.KEY_TAB) {
-                    event.preventDefault();
-                    suggest();
-                } else if (event.getNativeKeyCode() == KeyCodes.KEY_BACKSPACE && getInputLenght() == 0) {
-                    bell();
-                } else if (event.getNativeEvent().getCtrlKey()) {
-                    final char ctrlChar = getControlKey(event.getNativeKeyCode());
-                    if (ctrlChar > 0) {
-                        event.preventDefault();
-                        handleControlChar(ctrlChar);
-                    }
-                }
-
-            }
-        }, KeyDownEvent.getType());
 
         updateFontDimensions();
     }
@@ -940,20 +938,20 @@ public class TextConsole extends FocusWidget {
     protected void onUnload() {
         super.onUnload();
 
-        if (clickHandler != null) {
-            clickHandler.removeHandler();
+        if (clickHandlerRegistration != null) {
+            clickHandlerRegistration.removeHandler();
         }
-        if (focusHandler != null) {
-            focusHandler.removeHandler();
-        }
-        if (keyHandler != null) {
-            keyHandler.removeHandler();
+        if (keyHandlerRegistration != null) {
+            keyHandlerRegistration.removeHandler();
         }
     }
 
     @Override
     protected void onLoad() {
         super.onLoad();
+        clickHandlerRegistration = addDomHandler(clickHandler, ClickEvent.getType());
+        keyHandlerRegistration = addDomHandler(keyHandler, KeyDownEvent.getType());
+
         init();
     }
 }
