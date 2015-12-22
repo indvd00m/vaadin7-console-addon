@@ -12,16 +12,6 @@ import com.vaadin.shared.communication.ClientRpc;
  */
 public interface ConsoleClientRpc extends ClientRpc {
 
-    void setGreeting(String greeting);
-
-    void setPs(String ps);
-
-    void setWrap(boolean wrap);
-
-    void setRows(int rows);
-
-    void setCols(int cols);
-
     void print(String text);
 
     void printWithClass(String text, String className);
@@ -58,12 +48,6 @@ public interface ConsoleClientRpc extends ClientRpc {
 
     void bell();
 
-    void setMaxBufferSize(int bufferSize);
-
     void clearHistory();
-
-    void setPrintPromptOnInput(boolean printPromptOnInput);
-
-    void setScrollLock(boolean scrollLock);
 
 }

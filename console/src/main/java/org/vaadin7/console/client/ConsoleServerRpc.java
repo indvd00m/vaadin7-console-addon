@@ -15,10 +15,6 @@ public interface ConsoleServerRpc extends ServerRpc {
 
     void setWidth(String width);
 
-    void setCols(int cols);
-
-    void setRows(int rows);
-
     void input(String input);
 
     void suggest(String input);

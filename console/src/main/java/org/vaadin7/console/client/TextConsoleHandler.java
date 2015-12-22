@@ -6,10 +6,6 @@ public interface TextConsoleHandler {
 
     void suggest(String input);
 
-    void colsChanged(int cols);
-
-    void rowsChanged(int rows);
-
     void paintableSizeChanged();
 
 }

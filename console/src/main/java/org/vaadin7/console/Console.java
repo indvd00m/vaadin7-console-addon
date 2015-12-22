@@ -58,16 +58,6 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
             }
 
             @Override
-            public void setCols(int cols) {
-                config.cols = cols;
-            }
-
-            @Override
-            public void setRows(int rows) {
-                config.rows = rows;
-            }
-
-            @Override
             public void input(String input) {
                 handleInput(input);
             }
@@ -78,16 +68,6 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
             }
         };
         registerRpc(rpc);
-
-        // setCols(getCols());
-        // setRows(getRows());
-        setMaxBufferSize(getMaxBufferSize());
-        setWrap(isWrap());
-        setPrintPromptOnInput(isPrintPromptOnInput());
-        setScrollLock(isScrollLock());
-        setGreeting(getGreeting());
-        setPs(getPs());
-        reset();
     }
 
     // We must override getState() to cast the state to ConsoleState
@@ -101,26 +81,17 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
     private ANSICodeConverter ansiToCSSconverter;
     private boolean isConvertANSIToCSS = false;
     private final HashMap<String, Command> commands = new HashMap<String, Command>();
-    private final Config config = new Config();
 
     private static final String DEFAULT_PS = "}> ";
-    private static final String DEFAULT_GREETING = "Console ready.";
-    private static final int DEFAULT_BUFFER = 0;
-    private static final int DEFAULT_COLS = -1;
-    private static final int DEFAULT_ROWS = -1;
-    private static final boolean DEFAULT_WRAP = true;
-    private static final boolean DEFAULT_PRINT_PROMPT_ON_INPUT = true;
-    private static final boolean DEFAULT_SMART_SCROLL_TO_END = false;
     private static final int MAX_COLS = 500;
     private static final int MAX_ROWS = 200;
 
     public boolean isWrap() {
-        return config.wrap;
+        return getState().wrap;
     }
 
     public void setWrap(final boolean wrap) {
-        config.wrap = wrap;
-        getRpcProxy(ConsoleClientRpc.class).setWrap(wrap);
+        getState().wrap = wrap;
     }
 
     /**
@@ -128,7 +99,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
      *         false otherwise
      */
     public boolean isPrintPromptOnInput() {
-        return config.isPrintPromptOnInput;
+        return getState().isPrintPromptOnInput;
     }
 
     /**
@@ -137,8 +108,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
      *            console, nothing happens otherwise
      */
     public void setPrintPromptOnInput(final boolean isPrintPromptOnInput) {
-        config.isPrintPromptOnInput = isPrintPromptOnInput;
-        getRpcProxy(ConsoleClientRpc.class).setPrintPromptOnInput(isPrintPromptOnInput);
+        getState().isPrintPromptOnInput = isPrintPromptOnInput;
     }
 
     /**
@@ -146,7 +116,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
      *         was "end"
      */
     public boolean isScrollLock() {
-        return config.isScrollLock;
+        return getState().isScrollLock;
     }
 
     /**
@@ -155,8 +125,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
      *            state was "end"
      */
     public void setScrollLock(final boolean isScrollLock) {
-        config.isScrollLock = isScrollLock;
-        getRpcProxy(ConsoleClientRpc.class).setScrollLock(isScrollLock);
+        getState().isScrollLock = isScrollLock;
     }
 
     /**
@@ -170,24 +139,6 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
     private PrintStream printStream;
     private String lastSuggestInput;
     private List<CommandProvider> commandProviders;
-
-    /**
-     * An inner class for holding the configuration data.
-     */
-    public static class Config implements Serializable {
-
-        private static final long serialVersionUID = -812601232248504108L;
-
-        int maxBufferSize = DEFAULT_BUFFER;
-        int cols = DEFAULT_COLS;
-        int rows = DEFAULT_ROWS;
-        boolean wrap = DEFAULT_WRAP;
-        boolean isPrintPromptOnInput = DEFAULT_PRINT_PROMPT_ON_INPUT;
-        boolean isScrollLock = DEFAULT_SMART_SCROLL_TO_END;
-        String ps = DEFAULT_PS;
-        String greeting = DEFAULT_GREETING;
-
-    }
 
     /**
      * Console Handler interface.
@@ -411,6 +362,7 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
     }
 
     protected void parseAndExecuteCommand(final String input) {
+        getState().history.add(input);
         final String[] argv = parseInput(input);
         if (argv != null && argv.length > 0) {
             final Command c = getCommand(argv[0]);
@@ -520,60 +472,57 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
     }
 
     public String getGreeting() {
-        return config.greeting;
+        return getState().greeting;
     }
 
     public String getPs() {
-        return config.ps;
+        return getState().ps;
     }
 
     public int getMaxBufferSize() {
-        return config.maxBufferSize;
+        return getState().maxBufferSize;
     }
 
     public int getRows() {
-        return config.rows;
+        return getState().rows;
     }
 
     public void setGreeting(final String greeting) {
-        config.greeting = greeting;
-        getRpcProxy(ConsoleClientRpc.class).setGreeting(greeting);
+        getState().greeting = greeting;
     }
 
     public void setPs(final String ps) {
-        config.ps = ps == null ? DEFAULT_PS : ps;
-        getRpcProxy(ConsoleClientRpc.class).setPs(config.ps);
+        getState().ps = ps == null ? DEFAULT_PS : ps;
     }
 
     public void setMaxBufferSize(final int lines) {
-        config.maxBufferSize = lines > 0 ? lines : 0;
-        getRpcProxy(ConsoleClientRpc.class).setMaxBufferSize(config.maxBufferSize);
+        getState().maxBufferSize = lines > 0 ? lines : 0;
     }
 
     public void setRows(final int rows) {
-        config.rows = rows;
-        if (config.rows < 1) {
-            config.rows = 1;
+        int configRows = rows;
+        if (configRows < 1) {
+            configRows = 1;
         }
-        if (config.rows > MAX_ROWS) {
-            config.rows = MAX_ROWS;
+        if (configRows > MAX_ROWS) {
+            configRows = MAX_ROWS;
         }
-        getRpcProxy(ConsoleClientRpc.class).setRows(rows);
+        getState().rows = configRows;
     }
 
     public int getCols() {
-        return config.cols;
+        return getState().cols;
     }
 
     public void setCols(final int cols) {
-        config.cols = cols;
-        if (config.cols < 1) {
-            config.cols = 1;
+        int configCols = cols;
+        if (configCols < 1) {
+            configCols = 1;
         }
-        if (config.cols > MAX_COLS) {
-            config.cols = MAX_COLS;
+        if (configCols > MAX_COLS) {
+            configCols = MAX_COLS;
         }
-        getRpcProxy(ConsoleClientRpc.class).setCols(config.cols);
+        getState().cols = configCols;
     }
 
     public void prompt() {

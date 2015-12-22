@@ -1,7 +1,6 @@
 package org.vaadin7.console.client;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
@@ -14,4 +13,13 @@ public class ConsoleState extends com.vaadin.shared.AbstractComponentState {
     // State can have both public variable and bean properties
     public String text = "Console";
 
+    public int maxBufferSize = 0;
+    public int cols = -1;
+    public int rows = -1;
+    public boolean wrap = true;
+    public boolean isPrintPromptOnInput = true;
+    public boolean isScrollLock = false;
+    public String greeting = "Console ready.";
+    public ArrayList<String> history = new ArrayList<String>();
+    public String ps = "}> ";
 }

@@ -38,33 +38,6 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
         registerRpc(ConsoleClientRpc.class, new ConsoleClientRpc() {
 
             @Override
-            public void setGreeting(String greeting) {
-                getWidget().getConfig().setGreeting(greeting);
-            }
-
-            @Override
-            public void setPs(String ps) {
-                getWidget().setPs(ps);
-            }
-
-            @Override
-            public void setWrap(boolean wrap) {
-                getWidget().getConfig().setWrap(wrap);
-            }
-
-            @Override
-            public void setRows(int rows) {
-                getWidget().getConfig().setRows(rows);
-                getWidget().setRows(rows);
-            }
-
-            @Override
-            public void setCols(int cols) {
-                getWidget().getConfig().setCols(cols);
-                getWidget().setCols(cols);
-            }
-
-            @Override
             public void print(String text) {
                 getWidget().print(text);
             }
@@ -155,26 +128,9 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
             }
 
             @Override
-            public void setMaxBufferSize(int bufferSize) {
-                getWidget().getConfig().setMaxBufferSize(bufferSize);
-                getWidget().setMaxBufferSize(bufferSize);
-            }
-
-            @Override
             public void clearHistory() {
                 getWidget().clearCommandHistory();
             }
-
-            @Override
-            public void setPrintPromptOnInput(boolean printPromptOnInput) {
-                getWidget().getConfig().setPrintPromptOnInput(printPromptOnInput);
-            }
-
-            @Override
-            public void setScrollLock(boolean scrollLock) {
-                getWidget().getConfig().setScrollLock(scrollLock);
-            }
-
         });
 
         getWidget().setHandler(new TextConsoleHandler() {
@@ -194,16 +150,6 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
                 notifyPaintableSizeChange();
                 rpc.setHeight(getWidget().getHeight());
                 rpc.setWidth(getWidget().getWidth());
-            }
-
-            @Override
-            public void rowsChanged(int rows) {
-                rpc.setRows(rows);
-            }
-
-            @Override
-            public void colsChanged(int cols) {
-                rpc.setCols(cols);
             }
         });
 
@@ -232,6 +178,32 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         // GWT.log("onStateChanged() width = " + getState().width);
         super.onStateChanged(stateChangeEvent);
+        log("inside onStateChanged()");
+        ConsoleWidget widget = getWidget();
+        if (!getState().ps.equals(widget.getConfig().getPs()))
+            widget.setPs(getState().ps);
+        if (getState().maxBufferSize != widget.getConfig().getMaxBufferSize()) {
+            widget.getConfig().setMaxBufferSize(getState().maxBufferSize);
+            widget.setMaxBufferSize(getState().maxBufferSize);
+        }
+        if (getState().cols != widget.getConfig().getCols()) {
+            widget.getConfig().setCols(getState().cols);
+            widget.setCols(getState().cols);
+        }
+        if (getState().rows != widget.getConfig().getRows()) {
+            widget.getConfig().setRows(getState().rows);
+            widget.setRows(getState().rows);
+        }
+        if (getState().wrap != widget.getConfig().isWrap())
+            widget.getConfig().setWrap(getState().wrap);
+        if (getState().isPrintPromptOnInput != widget.getConfig().isPrintPromptOnInput())
+            widget.getConfig().setPrintPromptOnInput(getState().isPrintPromptOnInput);
+        if (getState().isScrollLock != widget.getConfig().isScrollLock())
+            widget.getConfig().setScrollLock(getState().isScrollLock);
+        if (!getState().greeting.equals(widget.getConfig().getGreeting()))
+            widget.getConfig().setGreeting(getState().greeting);
+        if (!getState().history.isEmpty())
+            widget.addPreviousHistory(getState().history);
     }
 
     @Override
@@ -257,4 +229,7 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
         getWidget().setHeight(getState().height);
     }
 
+    private native int log(String msg)/*-{
+        console.log(msg);
+    }-*/;
 }

@@ -327,6 +327,7 @@ public class TextConsole extends FocusWidget {
         setCols(config.getCols());
         setRows(config.getRows());
         setMaxBufferSize(config.getMaxBufferSize());
+        prompt();
     }
 
     private void updateFontDimensions() {
@@ -395,44 +396,44 @@ public class TextConsole extends FocusWidget {
     }
 
     private native void setSelectionRange(Element input, int selectionStart, int selectionEnd)/*-{
-                                                                                                if (input.setSelectionRange) {
-                                                                                                input.focus();
-                                                                                                input.setSelectionRange(selectionStart, selectionEnd);
-                                                                                                }
-                                                                                                else if (input.createTextRange) {
-                                                                                                var range = input.createTextRange();
-                                                                                                range.collapse(true);
-                                                                                                range.moveEnd('character', selectionEnd);
-                                                                                                range.moveStart('character', selectionStart);
-                                                                                                range.select();
-                                                                                                }
-                                                                                                }-*/;
+        if (input.setSelectionRange) {
+            input.focus();
+            input.setSelectionRange(selectionStart, selectionEnd);
+        }
+        else if (input.createTextRange) {
+            var range = input.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', selectionEnd);
+            range.moveStart('character', selectionStart);
+            range.select();
+        }
+    }-*/;
 
     private native int getScrollbarWidth()/*-{
 
-                                            var i = $doc.createElement('p');
-                                            i.style.width = '100%';
-                                            i.style.height = '200px';
-                                            var o = $doc.createElement('div');
-                                            o.style.position = 'absolute';
-                                            o.style.top = '0px';
-                                            o.style.left = '0px';
-                                            o.style.visibility = 'hidden';
-                                            o.style.width = '200px';
-                                            o.style.height = '150px';
-                                            o.style.overflow = 'hidden';
-                                            o.appendChild(i);
-                                            $doc.body.appendChild(o);
-                                            var w1 = i.offsetWidth;
-                                            var h1 = i.offsetHeight;
-                                            o.style.overflow = 'scroll';
-                                            var w2 = i.offsetWidth;
-                                            var h2 = i.offsetHeight;
-                                            if (w1 == w2) w2 = o.clientWidth;
-                                            if (h1 == h2) h2 = o.clientWidth;
-                                            $doc.body.removeChild(o);
-                                            return w1-w2;
-                                            }-*/;
+        var i = $doc.createElement('p');
+        i.style.width = '100%';
+        i.style.height = '200px';
+        var o = $doc.createElement('div');
+        o.style.position = 'absolute';
+        o.style.top = '0px';
+        o.style.left = '0px';
+        o.style.visibility = 'hidden';
+        o.style.width = '200px';
+        o.style.height = '150px';
+        o.style.overflow = 'hidden';
+        o.appendChild(i);
+        $doc.body.appendChild(o);
+        var w1 = i.offsetWidth;
+        var h1 = i.offsetHeight;
+        o.style.overflow = 'scroll';
+        var w2 = i.offsetWidth;
+        var h2 = i.offsetHeight;
+        if (w1 == w2) w2 = o.clientWidth;
+        if (h1 == h2) h2 = o.clientWidth;
+        $doc.body.removeChild(o);
+        return w1 - w2;
+    }-*/;
 
     public void newLine() {
         // GWT.log("newline");
@@ -453,6 +454,7 @@ public class TextConsole extends FocusWidget {
     }
 
     protected void setPs(final String string) {
+        config.setPs(string);
         cleanPs = Util.escapeHTML(string);
         cleanPs = cleanPs.replaceAll(" ", "&nbsp;");
         ps.setInnerHTML(cleanPs);
@@ -760,9 +762,6 @@ public class TextConsole extends FocusWidget {
         // GWT.log("calculateRowsFromHeight: font=" + fontW + "x" + fontH
         // + ";scrollbar=" + scrollbarW + ";cols=" + cols + ";rows="
         // + rows + ";size=" + getWidth() + "x" + getHeight());
-        if (oldRows != rows) {
-            handler.rowsChanged(rows);
-        }
     }
 
     protected void calculateHeightFromRows() {
@@ -785,9 +784,6 @@ public class TextConsole extends FocusWidget {
 //       GWT.log("calculateColsFromWidth: font=" + fontW + "x" + fontH
 //       + ";scrollbar=" + scrollbarW + ";cols=" + cols + ";rows="
 //       + rows + ";size=" + getWidth() + "x" + getHeight());
-        if (oldCols != cols) {
-            handler.colsChanged(cols);
-        }
     }
 
     protected void calculateWidthFromCols() {
@@ -932,6 +928,24 @@ public class TextConsole extends FocusWidget {
             }
         };
         timer.schedule(150);
+    }
+
+    // Add history only once
+    protected void addPreviousHistory(List<String> history) {
+        if (!cmdHistory.isEmpty() || history.isEmpty())
+            return;
+        cmdHistory.addAll(history);
+        cmdHistoryIndex = cmdHistory.size();
+        if (maxBufferSize < 1)
+            maxBufferSize = cmdHistory.size();
+
+        setPromtActive(false);
+        for (String command : history) {
+            print(prompt.getInnerText() + command);
+            newLine();
+        }
+        setPromtActive(true);
+        promptWrap.scrollIntoView();
     }
 
     @Override
