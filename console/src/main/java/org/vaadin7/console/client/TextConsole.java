@@ -462,9 +462,9 @@ public class TextConsole extends FocusWidget {
 
     public void prompt(final String inputText) {
         setPromtActive(true);
-        scrollToEnd();
         ps.setInnerHTML(cleanPs);
         setInput(inputText);
+        scrollToEnd();
     }
 
     public void focusInput() {
@@ -477,12 +477,9 @@ public class TextConsole extends FocusWidget {
     private boolean isCheckedScrollState = false;
 
     public void scrollToEnd() {
-        if (config.isScrollLock()) {
-            if (config.isScrolledToEnd())
-                term.setScrollTop(BIG_NUMBER);
-        } else
-            term.setScrollTop(BIG_NUMBER);
-        isCheckedScrollState = false;
+        if (term.getOffsetHeight() < prompt.getScrollHeight() + prompt.getOffsetTop()) {
+            term.setScrollTop(prompt.getOffsetTop() - (term.getOffsetHeight() - prompt.getScrollHeight()));
+        }
     }
 
     private void beforeChangeTerminal() {

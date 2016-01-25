@@ -8,6 +8,7 @@ import com.vaadin.client.annotations.OnStateChange;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.client.ui.PostLayoutListener;
 import com.vaadin.shared.communication.FieldRpc.FocusAndBlurServerRpc;
 import com.vaadin.shared.ui.Connect;
 
@@ -23,7 +24,7 @@ import org.vaadin7.console.Console;
  *
  */
 @Connect(Console.class)
-public class ConsoleConnector extends AbstractComponentConnector implements FocusHandler {
+public class ConsoleConnector extends AbstractComponentConnector implements FocusHandler, PostLayoutListener {
 
     private static final long serialVersionUID = 2829157055722482839L;
 
@@ -178,7 +179,6 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         // GWT.log("onStateChanged() width = " + getState().width);
         super.onStateChanged(stateChangeEvent);
-        log("inside onStateChanged()");
         ConsoleWidget widget = getWidget();
         if (!getState().ps.equals(widget.getConfig().getPs()))
             widget.setPs(getState().ps);
@@ -229,7 +229,8 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
         getWidget().setHeight(getState().height);
     }
 
-    private native int log(String msg)/*-{
-        console.log(msg);
-    }-*/;
+    @Override
+    public void postLayout() {
+        getWidget().scrollToEnd();
+    }
 }
