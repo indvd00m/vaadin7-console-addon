@@ -5,65 +5,49 @@ import com.vaadin.shared.communication.ClientRpc;
 /**
  * ClientRpc is used to pass events from server to client. For sending
  * information about the changes to component state, use State instead.
- * 
+ *
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 22.05.2014 11:01:38
- * 
+ *
  */
 public interface ConsoleClientRpc extends ClientRpc {
 
-	public void setGreeting(String greeting);
+    void print(String text);
 
-	public void setPs(String ps);
+    void printWithClass(String text, String className);
 
-	public void setWrap(boolean wrap);
+    void println(String text);
 
-	public void setRows(int rows);
+    void printlnWithClass(String text, String className);
 
-	public void setCols(int cols);
+    void append(String text);
 
-	public void print(String text);
+    void appendWithClass(String text, String className);
 
-	public void printWithClass(String text, String className);
+    void prompt();
 
-	public void println(String text);
+    void prompt(String inputText);
 
-	public void printlnWithClass(String text, String className);
+    void ff();
 
-	public void append(String text);
+    void cr();
 
-	public void appendWithClass(String text, String className);
+    void lf();
 
-	public void prompt();
+    void clearBuffer();
 
-	public void prompt(String inputText);
+    void reset();
 
-	public void ff();
+    void newLine();
 
-	public void cr();
+    void newLineIfNotEndsWithNewLine();
 
-	public void lf();
+    void scrollToEnd();
 
-	public void clearBuffer();
+    void focusInput();
 
-	public void reset();
+    void bell();
 
-	public void newLine();
-
-	public void newLineIfNotEndsWithNewLine();
-
-	public void scrollToEnd();
-
-	public void focusInput();
-
-	public void bell();
-
-	public void setMaxBufferSize(int bufferSize);
-
-	public void clearHistory();
-
-	public void setPrintPromptOnInput(boolean printPromptOnInput);
-
-	public void setScrollLock(boolean scrollLock);
+    void clearHistory();
 
 }

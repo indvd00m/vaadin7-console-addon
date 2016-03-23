@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- $Id: ivysettings.xml 52081 2015-10-05 13:52:51Z mthomas $ -->
+<ivysettings>
+    <property name="m2-pattern" value="${user.home}/.m2/repository/[organisation]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]" override="false" />
+    <property name="m2-pom-pattern" value="${user.home}/.m2/repository/[organisation]/[module]/[revision]/[module]-[revision].pom" override="false" />
+    <resolvers>
+
+        <filesystem name="local-maven2" m2compatible="true" force="false" local="true">
+            <artifact pattern="${m2-pattern}"/>
+            <ivy pattern="${m2-pom-pattern}"/>
+        </filesystem>
+
+        <!-- Local -->
+        <chain name="local" returnFirst="true">
+
+            <!-- Local file system -->
+            <filesystem name="local-fs" checkmodified="true">
+                <ivy      pattern="/opt/repo/ivy/[organisation]/[module]/[revision]/ivy.xml"/>
+                <artifact pattern="/opt/repo/ivy/[organisation]/[module]/[revision]/[type]s/[artifact].[ext]"/>
+            </filesystem>
+
+        </chain>
+
+        <!-- Ivy RoundUp -->
+        <chain name="ivyroundup" returnFirst="true">
+
+            <!-- Ivy RoundUp - Local copy -->
+            <packager name="ivyroundup-local" checkmodified="true" restricted="false"
+              buildRoot="${user.home}/.ivy2/packager/build" resourceCache="${user.home}/.ivy2/packager/cache">
+                <ivy      pattern="file:///opt/repo/ivyroundup/repo/modules/[organisation]/[module]/[revision]/ivy.xml"/>
+                <artifact pattern="file:///opt/repo/ivyroundup/repo/modules/[organisation]/[module]/[revision]/packager.xml"/>
+            </packager>
+
+            <!-- Ivy RoundUp - Off the Internet -->
+            <packager name="ivyroundup-http" checkmodified="true" restricted="false"
+              buildRoot="${user.home}/.ivy2/packager/build" resourceCache="${user.home}/.ivy2/packager/cache">
+                <ivy      pattern="http://archiecobbs.github.io/ivyroundup/repo/modules/[organisation]/[module]/[revision]/ivy.xml"/>
+                <artifact pattern="http://archiecobbs.github.io/ivyroundup/repo/modules/[organisation]/[module]/[revision]/packager.xml"/>
+            </packager>
+
+            <resolver ref="local-maven2"/>
+
+            <ibiblio name="maven" m2compatible="true"/>
+            <ibiblio name="vaadin-addons" usepoms="true" m2compatible="true" root="http://maven.vaadin.com/vaadin-addons"/>
+        </chain>
+
+    </resolvers>
+    <modules>
+        <module organisation=".*" name=".*" resolver="ivyroundup"/>
+    </modules>
+    <caches useOrigin="true"/>
+</ivysettings>
+

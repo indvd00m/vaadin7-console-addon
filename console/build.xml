@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- $Id: build.xml 52828 2015-10-27 14:20:03Z mthomas $ -->
+<project name="console" default="publish"
+  xmlns:dellroad="urn:org.dellroad.ant"
+  xmlns:antcontrib="urn:net.sf.antcontrib"
+  xmlns:ivy="urn:org.apache.ivy.ant">
+
+    <!-- Configure build & stuff -->
+    <property name="full.version" value="1.3.1"/>
+    <property name="javac.compiler.flags" value="-Xlint:all"/>
+
+    <!-- Import generic build macros -->
+    <import file="${basedir}/src/main/build/macros.xml"/>
+
+    <!-- Determine SVN revision and full version -->
+    <!-- Preparation for compiling sources -->
+    <target name="mvn" unless="javac.completed">
+        <antcontrib:shellscript shell="bash">
+        <![CDATA[
+            set -e
+
+            mvn clean package
+        ]]>
+        </antcontrib:shellscript>
+        <property name="javac.completed" value="true"/>
+    </target>
+
+    <!-- Publish -->
+    <target name="publish" depends="mvn" unless="publish.completed">
+        <dellroad:ivydist version="${full.version}">
+            <module-preparation>
+                <mkdir dir="build/ivy/jars"/>
+
+                <copy file="target/${ant.project.name}-${full.version}.jar"
+                    toFile="build/ivy/jars/${ant.project.name}.jar"/>
+                <copy file="target/${ant.project.name}-${full.version}-sources.jar"
+                    toFile="build/ivy/sources/${ant.project.name}.jar"/>
+                <copy file="target/${ant.project.name}-${full.version}-javadoc.jar"
+                        toFile="build/ivy/javadocs/${ant.project.name}.jar"/>
+            </module-preparation>
+        </dellroad:ivydist>
+        <property name="publish.completed" value="true"/>
+    </target>
+
+</project>
+

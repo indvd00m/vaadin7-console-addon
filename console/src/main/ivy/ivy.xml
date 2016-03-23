@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- $Id: ivy.xml 53170 2015-11-12 21:57:30Z mthomas $ -->
+<ivy-module version="1.0">
+
+    <info organisation="org.vaadin7.addons" module="console" status="release">
+        <license name="Apache 2"/>
+        <ivyauthor name="Mark Thomas"/>
+        <description homepage="https://github.com/markathomas/vaadin7-console-addon">
+            Vaadin 7 port of Console add-on
+        </description>
+    </info>
+
+    <publications>
+        <artifact name="console"/>
+        <artifact name="console" type="source" ext="jar"/>
+        <artifact name="console" type="javadoc" ext="jar"/>
+    </publications>
+
+    <dependencies>
+        <dependency org="com.vaadin" name="vaadin-server" rev="[7.2,8.0["/>
+        <dependency org="com.vaadin" name="vaadin-client" rev="[7.2,8.0["/>
+    </dependencies>
+
+</ivy-module>

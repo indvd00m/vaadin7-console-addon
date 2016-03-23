@@ -1,63 +1,60 @@
 .term {
-	background-color: #000;
-	color: #f0f0f0;
-	/* color: #33d011; */
-	padding: 1px;
-	padding-left: 2px;
-	padding-right: 2px;
-	font-family: monospace;;
-	font-size: 10pt;
-	overflow: scroll;
-	overflow-x: hidden;
+    background-color: #000;
+    color: #f0f0f0;
+    /* color: #33d011; */
+    padding: 1px 2px;
+    font-family: monospace;;
+    font-size: 10pt;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
 .term-rev, .term input.term-rev  {
-	background-color: #f0f0f0;
-	color: #000;
+    background-color: #f0f0f0;
+    color: #000;
 }
 
 .term .b {
-	margin: 0;
-	padding: 0;	
+    margin: 0;
+    padding: 0;
 }
 
 .term .pw {
-	margin: 0;
-	padding: 0;	
+    margin: 0;
+    padding: 0;
 }
 
 .term .pw .p {
-	border-collapse: collapse;
-	margin: 0;
-	padding: 0;
-	height: 1em;	
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    height: 1em;
 }
 
 .term .pw .psw {
-	margin: 0;
-	padding: 0;	
-	width: auto;
+    margin: 0;
+    padding: 0;
+    width: auto;
 }
 
 .term .pw .iw {
-	margin: 0;
-	padding: 0;	
-	width: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
 .term .i {
-	border: none;
-	outline: none;
-	border-width: 0;
-	width: 100%;
-	height: 1em;
-	margin: 0;
-	padding: 0;	
-	font-family: monospace;;
-	font-size: 10pt;
-	word-wrap:break-word;
-	background-color: #000;
-	color: #f0f0f0;
+    outline: none;
+    border: 0 none;
+    width: 100%;
+    height: 1em;
+    margin: 0;
+    padding: 0;
+    font-family: monospace;;
+    font-size: 10pt;
+    word-wrap:break-word;
+    background-color: #000;
+    color: #f0f0f0;
 }
 
 
@@ -68,189 +65,189 @@
 }
 
  **/
- 
+
  /* Classes for ANSI Escape Sequences */
 
 .term-text-decoration-blink {
-	text-decoration: blink;
+    text-decoration: blink;
 }
 
 .term-text-decoration-line-through {
-	text-decoration: line-through;
+    text-decoration: line-through;
 }
 
 .term-text-decoration-overline {
-	text-decoration: overline;
+    text-decoration: overline;
 }
 
 .term-text-decoration-underline {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 .term-text-decoration-none {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 .term-font-style-normal {
-	font-style: normal;
+    font-style: normal;
 }
 
 .term-font-style-italic {
-	font-style: italic;
+    font-style: italic;
 }
 
 .term-font-style-oblique {
-	font-style: oblique;
+    font-style: oblique;
 }
 
 .term-font-weight-normal {
-	font-weight: normal;
+    font-weight: normal;
 }
 
 .term-font-weight-bold {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .term-font-weight-bolder {
-	font-weight: bolder;
+    font-weight: bolder;
 }
 
 .term-font-weight-lighter {
-	font-weight: lighter;
+    font-weight: lighter;
 }
 
 .term-color-white {
-	color: white;
+    color: white;
 }
 
 .term-color-silver {
-	color: silver;
+    color: silver;
 }
 
 .term-color-gray {
-	color: gray;
+    color: gray;
 }
 
 .term-color-black {
-	color: black;
+    color: black;
 }
 
 .term-color-maroon {
-	color: maroon;
+    color: maroon;
 }
 
 .term-color-red {
-	color: red;
+    color: red;
 }
 
 .term-color-orange {
-	color: orange;
+    color: orange;
 }
 
 .term-color-yellow {
-	color: yellow;
+    color: yellow;
 }
 
 .term-color-olive {
-	color: olive;
+    color: olive;
 }
 
 .term-color-lime {
-	color: lime;
+    color: lime;
 }
 
 .term-color-green {
-	color: green;
+    color: green;
 }
 
 .term-color-aqua {
-	color: aqua;
+    color: aqua;
 }
 
 .term-color-blue {
-	color: blue;
+    color: blue;
 }
 
 .term-color-navy {
-	color: navy;
+    color: navy;
 }
 
 .term-color-teal {
-	color: teal;
+    color: teal;
 }
 
 .term-color-fuchsia {
-	color: fuchsia;
+    color: fuchsia;
 }
 
 .term-color-purple {
-	color: purple;
+    color: purple;
 }
 
 .term-background-color-white {
-	background-color: white;
+    background-color: white;
 }
 
 .term-background-color-silver {
-	background-color: silver;
+    background-color: silver;
 }
 
 .term-background-color-gray {
-	background-color: gray;
+    background-color: gray;
 }
 
 .term-background-color-black {
-	background-color: black;
+    background-color: black;
 }
 
 .term-background-color-maroon {
-	background-color: maroon;
+    background-color: maroon;
 }
 
 .term-background-color-red {
-	background-color: red;
+    background-color: red;
 }
 
 .term-background-color-orange {
-	background-color: orange;
+    background-color: orange;
 }
 
 .term-background-color-yellow {
-	background-color: yellow;
+    background-color: yellow;
 }
 
 .term-background-color-olive {
-	background-color: olive;
+    background-color: olive;
 }
 
 .term-background-color-lime {
-	background-color: lime;
+    background-color: lime;
 }
 
 .term-background-color-green {
-	background-color: green;
+    background-color: green;
 }
 
 .term-background-color-aqua {
-	background-color: aqua;
+    background-color: aqua;
 }
 
 .term-background-color-blue {
-	background-color: blue;
+    background-color: blue;
 }
 
 .term-background-color-navy {
-	background-color: navy;
+    background-color: navy;
 }
 
 .term-background-color-teal {
-	background-color: teal;
+    background-color: teal;
 }
 
 .term-background-color-fuchsia {
-	background-color: fuchsia;
+    background-color: fuchsia;
 }
 
 .term-background-color-purple {
-	background-color: purple;
+    background-color: purple;
 }
