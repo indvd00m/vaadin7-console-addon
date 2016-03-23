@@ -830,4 +830,8 @@ public class Console extends com.vaadin.ui.AbstractComponent implements Componen
         res.addAll(commands.keySet());
         return Collections.unmodifiableSet(res);
     }
+
+    public void setShouldTrim(boolean shouldTrim) {
+        getState().shouldTrim = shouldTrim;
+    }
 }
