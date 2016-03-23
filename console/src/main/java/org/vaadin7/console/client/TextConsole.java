@@ -81,6 +81,7 @@ public class TextConsole extends FocusWidget {
     private int maxBufferSize;
     private String cleanPs;
     private int paddingW;
+    private boolean shouldTrim = true;
     private final ClickHandler clickHandler = new ClickHandler() {
 
         public void onClick(final ClickEvent event) {
@@ -276,7 +277,7 @@ public class TextConsole extends FocusWidget {
             }
         }
         String lineBuffer = getInput();
-        lineBuffer = lineBuffer.trim();
+        if (shouldTrim) lineBuffer = lineBuffer.trim();
         if (!"".equals(lineBuffer)) {
             cmdHistory.add(lineBuffer);
             cmdHistoryIndex = cmdHistory.size();

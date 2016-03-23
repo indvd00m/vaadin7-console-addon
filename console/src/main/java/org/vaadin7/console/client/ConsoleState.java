@@ -19,6 +19,7 @@ public class ConsoleState extends com.vaadin.shared.AbstractComponentState {
     public boolean wrap = true;
     public boolean isPrintPromptOnInput = true;
     public boolean isScrollLock = false;
+    public boolean shouldTrim = true;
     public String greeting = "Console ready.";
     public ArrayList<String> history = new ArrayList<String>();
     public String ps = "}> ";

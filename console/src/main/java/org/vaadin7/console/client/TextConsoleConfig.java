@@ -83,4 +83,12 @@ public class TextConsoleConfig extends JavaScriptObject {
                                                         this.bufferRows = rows;
                                                         }-*/;
 
+    public final native void setShouldTrim(boolean s) /*-{
+                                                        this.shouldTrim = s;
+                                                        }-*/;
+
+    public final native boolean shouldTrim() /*-{
+                                                return this.shouldTrim;
+                                                }-*/;
+
 }

@@ -204,6 +204,9 @@ public class ConsoleConnector extends AbstractComponentConnector implements Focu
             widget.getConfig().setGreeting(getState().greeting);
         if (!getState().history.isEmpty())
             widget.addPreviousHistory(getState().history);
+        if (!getState().shouldTrim != widget.getConfig().shouldTrim()){
+            widget.getConfig().setShouldTrim(getState().shouldTrim);
+        }
     }
 
     @Override
