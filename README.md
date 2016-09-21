@@ -38,6 +38,10 @@ mvn jetty:run
 ```
 To see the demo, navigate to <http://localhost:8080/>
 
+## Versions
+Maven artifacts are built via Travis: 
+[![Build Status](https://travis-ci.org/indvd00m/vaadin7-console-addon.svg?branch=master)](https://travis-ci.org/indvd00m/vaadin7-console-addon)
+
 ## Development with Eclipse IDE
 
 For further development of this add-on, the following tool-chain is recommended:
